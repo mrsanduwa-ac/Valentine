@@ -54,34 +54,41 @@
             z-index: 10;
         }
         .main-img { 
-            width: 85%; 
-            max-width: 280px; 
+            width: 60%; 
+            max-width: 180px; 
             height: auto;
             object-fit: contain; 
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             filter: drop-shadow(0 10px 15px rgba(255, 77, 109, 0.2));
         }
-        .emoji-stage { font-size: 70px; margin-bottom: 10px; }
-        h1 { color: #800e13; font-size: 24px; margin-bottom: 25px; padding: 0 10px; }
+        .emoji-stage { font-size: 60px; margin-bottom: 10px; }
+        h1 { color: #800e13; font-size: 22px; margin-bottom: 20px; padding: 0 10px; }
 
         .btn-group { 
             display: flex; 
             flex-direction: column; 
             align-items: center; 
-            gap: 20px; 
+            gap: 15px; 
             width: 100%; 
+            min-height: 200px;
+            position: relative;
         }
         #yesBtn { 
-            background: #28a745; color: white; padding: 18px 35px; 
-            border-radius: 50px; border: none; font-size: 20px; 
-            font-weight: bold; cursor: pointer; width: 85%; 
+            background: #28a745; color: white; padding: 15px 30px; 
+            border-radius: 50px; border: none; font-size: 18px; 
+            font-weight: bold; cursor: pointer; width: 80%; 
             box-shadow: 0 8px 20px rgba(40, 167, 69, 0.3);
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
+            z-index: 2;
+            max-width: 300px;
         }
         #noBtn { 
-            background: #ff4d6d; color: white; padding: 12px 25px; 
+            background: #ff4d6d; color: white; padding: 10px 20px; 
             border-radius: 50px; border: none; font-size: 16px; 
             cursor: pointer; box-shadow: 0 4px 10px rgba(255, 77, 109, 0.2);
+            z-index: 5;
+            transition: transform 0.1s ease;
+            white-space: nowrap;
         }
 
         /* --- Surprise Message Section --- */
@@ -96,7 +103,7 @@
             background: linear-gradient(rgba(255, 240, 243, 0.85), rgba(255, 240, 243, 0.85)), url('love2.jpeg');
             background-size: cover;
             background-position: center;
-            z-index: 500;
+            z-index: 2000;
         }
         
         .letter-container {
@@ -127,37 +134,27 @@
             margin-bottom: 20px;
             width: 80%;
             max-width: 300px;
-            transition: transform 0.2s;
         }
-        .call-btn:active { transform: scale(0.95); }
 
         .heart-particle { position: fixed; color: #ff4d6d; font-size: 24px; pointer-events: none; z-index: 999; animation: floatUp 3s linear forwards; }
-        
         @keyframes floatUp { 0% { transform: translateY(0) rotate(0); opacity: 1; } 100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; } }
         .shake { animation: shake 0.5s; }
         @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
-
-        /* Mobile specific font adjustments */
-        @media (max-width: 380px) {
-            h1 { font-size: 20px; }
-            .num-btn { width: 60px; height: 60px; }
-            .emoji-stage { font-size: 55px; }
-        }
     </style>
 </head>
 <body>
 
-<!-- 🔐 Passcode Screen -->
+<audio id="cheerSound" src="https://assets.mixkit.co/active_storage/sfx/2013/2013-preview.mp3"></audio>
+<audio id="popSound" src="https://assets.mixkit.co/active_storage/sfx/2014/2014-preview.mp3"></audio>
+
 <div id="pass-screen">
     <div class="animate__animated animate__fadeInDown" style="text-align:center;">
         <h2 style="color: #ff4d6d; margin-bottom: 5px;">Our Special Date? ❤️</h2>
         <p style="color: #999; font-size: 14px; margin-top:0;">ගෙස් කරලා ගහන්න බලන්න මෝඩි</p>
     </div>
-    
     <div class="pass-dots" id="dotsContainer">
         <div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
     </div>
-    
     <div class="num-pad animate__animated animate__fadeInUp">
         <button class="num-btn" onclick="press(1)">1</button>
         <button class="num-btn" onclick="press(2)">2</button>
@@ -174,27 +171,23 @@
     </div>
 </div>
 
-<!-- 💖 Main Surprise Section -->
 <div id="main-content" class="animate__animated animate__fadeIn">
     <div class="emoji-stage" id="emojiContainer">😊</div>
     <img src="love.png" alt="Us" class="main-img">
     <h1 id="questionText">Will you be my Valentine forever? ❤️</h1>
-    
     <div class="btn-group">
         <button id="yesBtn" onclick="finish()">Yes, I Will! 🥰</button>
-        <button id="noBtn" onclick="handleNo()">No</button>
+        <button id="noBtn" onclick="handleNoClick()">No</button>
     </div>
 </div>
 
-<!-- 🎁 Final Animation & Letter -->
-<div id="surprise" class="animate__animated animate__zoomIn">
-    <center>
-        <div style="font-size: 80px; margin-bottom: 10px;">💍</div>
-        <h1 style="color: #ff4d6d; font-size: 32px; margin-bottom: 25px; text-shadow: 0 2px 4px rgba(0,0,0,0.1);">I Love You Too! ❤️</h1>
-    </center>
+<div id="surprise" class="animate__animated animate__zoomIn" style="padding-bottom: 50px;">
+    <div style="font-size: 80px; margin-top: 20px;">💍</div>
+    <h1 style="color: #ff4d6d; font-size: 32px; margin-bottom: 20px;">I Love You Too! ❤️</h1>
     
-    <div class="letter-container animate__animated animate__fadeInUp">
-        <p style="font-size: 22px; font-weight: bold; color: #ff4d6d; margin-top: 0;">මගේ හිතුවක්කාර යක්ශණියට, ❤️😗</p>
+    <div style="background: white; border-radius: 20px; padding: 25px; margin: 0 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: left; line-height: 1.8; color: #444; overflow-y: auto; max-height: 60vh; border-left: 5px solid #ff4d6d;">
+        
+        <p style="font-size: 20px; font-weight: bold; color: #ff4d6d; margin-top: 0;">මගේ හිතුවක්කාර යක්ශණියට, ❤️😗</p>
         
         <p>අද වැලන්ටයින් දවස වුණාට, ඇත්තටම අපේ මේ අවුරුදු පහක ගමන දිහා බැලුවම හැමදාම අපිට ආදරවන්තයන්ගේ දවසක් තමයි. හැබැයි ඉතින් වැඩ වැඩිකමයි, ටාගට් පස්සේ දුවන එකයි හින්දා හුඟක් වෙලාවට අපිට ඒක අමතක වෙනවා.</p>
         
@@ -204,56 +197,43 @@
         
         <p>වැඩ අස්සේ හදිස්සියෙන් වචන ගැලපුවට, මේ හැම අකුරක් අස්සේම තියෙන්නේ ඔයාට තියෙන අවංකම ආදරේ.</p>
         
-        <p style="font-weight: bold; color: #d63384; font-size: 18px; border-top: 1px dashed #ffc1cc; padding-top: 15px;">හැපි වැලන්ටයින් ඩේ සුදු නෝනා! හැමදාමත් මගේම වෙලා ඉන්න. 😗✌️❤️</p>
+        <p style="font-weight: bold; color: #d63384;">හැපි වැලන්ටයින් ඩේ සුදු නෝනා! හැමදාමත් මගේම වෙලා ඉන්න. 😗✌️❤️</p>
         
-        <p style="text-align: right; font-weight: bold; font-style: italic; color: #ff4d6d; margin-bottom: 0; font-size: 20px;">ආදරෙයි මගේ Rosee 🌹🤍</p>
+        <p style="text-align: right; font-weight: bold; font-style: italic; color: #ff4d6d; margin-bottom: 0;">ආදරෙයි මගේ Rosee 🌹🤍</p>
     </div>
-    
     <center>
-        <!-- 📞 Call Me Button -->
         <a href="tel:+94767895962" class="call-btn animate__animated animate__pulse animate__infinite">
             <span>📞 Call Me Now</span>
         </a>
         <br>
-        <button onclick="location.reload()" style="background: none; border: 1px solid var(--primary-pink); color: var(--primary-pink); padding: 10px 20px; border-radius: 50px; font-weight: bold; margin-bottom: 40px; cursor: pointer;">Back to Start</button>
+        <button onclick="location.reload()" style="background: none; border: 1px solid var(--primary-pink); color: var(--primary-pink); padding: 10px 20px; border-radius: 50px; margin-bottom: 40px; cursor: pointer;">Back to Start</button>
     </center>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
 <script>
-    // --- Configuration ---
     const CORRECT_PASS = "0222"; 
     let currentInput = "";
     let noCount = 0;
 
     const noMessages = [
-        "No", 
-        "Are you sure? 🥺", 
-        "මාව එපාද? 💔", 
-        "Really? Think again! 😢", 
-        "ඔයා මට මෙහෙම කරනවද? 😭", 
-        "I'm gonna cry... 😿", 
-        "Please say Yes... ❤️",
-        "Don't do this to me! 💔",
-        "You're breaking my heart 😭",
-        "Last chance! 😟"
+        "No", "Are you sure? 🥺", "මාව එපාද? 💔", "Really? 😢", 
+        "ඔයා මට මෙහෙම කරනවද? 😭", "I'm gonna cry... 😿", 
+        "Please say Yes... ❤️", "Don't do this! 💔", 
+        "Breaking my heart 😭", "Last chance! 😟"
     ];
     const emojis = ["😊", "😟", "🥺", "😢", "😭", "😿", "☹️", "😣", "😭", "💔"];
 
-    // --- Passcode Logic ---
     function press(num) {
         if(currentInput.length < 4) {
             currentInput += num;
             updateDots();
-            if(currentInput.length === 4) {
-                setTimeout(checkPass, 400);
-            }
+            if(currentInput.length === 4) setTimeout(checkPass, 400);
         }
     }
 
     function updateDots() {
-        const dots = document.querySelectorAll('.dot');
-        dots.forEach((dot, i) => {
+        document.querySelectorAll('.dot').forEach((dot, i) => {
             dot.classList.toggle('active', i < currentInput.length);
         });
     }
@@ -267,8 +247,6 @@
             }, 800);
         } else {
             document.getElementById('dotsContainer').classList.add('shake');
-            if (window.navigator.vibrate) window.navigator.vibrate(200);
-            
             setTimeout(() => {
                 document.getElementById('dotsContainer').classList.remove('shake');
                 resetPass();
@@ -276,29 +254,42 @@
         }
     }
 
-    function resetPass() {
-        currentInput = "";
-        updateDots();
-    }
+    function resetPass() { currentInput = ""; updateDots(); }
 
-    // --- Interaction Logic ---
-    function handleNo() {
-        noCount++;
-        const yesBtn = document.getElementById('yesBtn');
+    function handleNoClick() {
         const noBtn = document.getElementById('noBtn');
+        const yesBtn = document.getElementById('yesBtn');
         
-        const currentSize = parseFloat(window.getComputedStyle(yesBtn).fontSize);
-        const newSize = currentSize + 15;
-        yesBtn.style.fontSize = newSize + "px";
-        yesBtn.style.padding = (newSize * 0.8) + "px";
+        noCount++;
 
-        if(noCount < noMessages.length) {
+        // Yes button එක ප්‍රමාණයෙන් වැඩි කිරීම
+        const currentSize = parseFloat(window.getComputedStyle(yesBtn).fontSize);
+        if(currentSize < 50) {
+            yesBtn.style.fontSize = (currentSize + 5) + "px";
+            yesBtn.style.padding = (currentSize * 0.7) + "px";
+        }
+
+        // පණිවිඩය සහ ඉමෝජි එක මාරු කිරීම
+        if (noCount < noMessages.length) {
             noBtn.innerText = noMessages[noCount];
             document.getElementById('emojiContainer').innerText = emojis[noCount];
-        } else {
-            const lastMsg = noMessages[noMessages.length - 1];
-            noBtn.innerText = lastMsg;
-            document.getElementById('emojiContainer').innerText = "😭💔";
+        }
+
+        // "Last chance" පණිවිඩයට පස්සේ (noCount >= 9) ක්ලික් කළොත් බටන් එක දුවනවා
+        if (noCount >= 9) {
+            noBtn.style.position = "fixed";
+            
+            const maxX = window.innerWidth - noBtn.offsetWidth - 20;
+            const maxY = window.innerHeight - noBtn.offsetHeight - 20;
+            
+            const randomX = Math.max(10, Math.floor(Math.random() * maxX));
+            const randomY = Math.max(10, Math.floor(Math.random() * maxY));
+            
+            noBtn.style.left = randomX + "px";
+            noBtn.style.top = randomY + "px";
+            
+            noBtn.innerText = "Can't catch me! 😜";
+            document.getElementById('emojiContainer').innerText = "🤪";
         }
         
         document.body.classList.add('shake');
@@ -306,33 +297,20 @@
     }
 
     function finish() {
+        try {
+            document.getElementById('cheerSound').play();
+            document.getElementById('popSound').play();
+        } catch(e) {}
+
         document.getElementById('main-content').style.display = 'none';
         document.getElementById('surprise').style.display = 'block';
         
-        const end = Date.now() + (2 * 1000);
-        const colors = ['#ff4d6d', '#ffb3c1', '#ffffff'];
-
+        const end = Date.now() + (3 * 1000);
         (function frame() {
-            confetti({
-                particleCount: 3,
-                angle: 60,
-                spread: 55,
-                origin: { x: 0 },
-                colors: colors
-            });
-            confetti({
-                particleCount: 3,
-                angle: 120,
-                spread: 55,
-                origin: { x: 1 },
-                colors: colors
-            });
-
-            if (Date.now() < end) {
-                requestAnimationFrame(frame);
-            }
+            confetti({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#ff4d6d', '#ffffff'] });
+            confetti({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#ff4d6d', '#ffffff'] });
+            if (Date.now() < end) requestAnimationFrame(frame);
         }());
-        
         setInterval(createHeart, 400);
     }
 
