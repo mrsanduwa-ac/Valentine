@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>My Forever Valentine ❤️</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <style>
+        :root { --primary-pink: #ff4d6d; --bg-cream: #fff0f3; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            background-color: var(--bg-cream); 
+            margin: 0; 
+            overflow: hidden; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            width: 100vw;
+        }
+
+        /* --- Passcode Screen --- */
+        #pass-screen { 
+            position: fixed; 
+            inset: 0; 
+            background: white; 
+            z-index: 1000; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            transition: transform 0.8s cubic-bezier(0.77, 0, 0.175, 1); 
+        }
+        .pass-dots { display: flex; gap: 15px; margin: 30px 0; }
+        .dot { width: 20px; height: 20px; border: 2px solid var(--primary-pink); border-radius: 50%; transition: 0.3s; }
+        .dot.active { background: var(--primary-pink); transform: scale(1.3); }
+        .num-pad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        .num-btn { 
+            width: 70px; height: 70px; border-radius: 50%; border: none; 
+            background: #ffe5ec; font-size: 24px; font-weight: bold; 
+            color: var(--primary-pink); cursor: pointer; display: flex; align-items: center; justify-content: center;
+        }
+        .num-btn:active { background: var(--primary-pink); color: white; transform: scale(0.9); }
+
+        /* --- Main Content --- */
+        #main-content { 
+            text-align: center; 
+            display: none; 
+            padding: 20px; 
+            width: 100%;
+            max-width: 450px; 
+            z-index: 10;
+        }
+        .main-img { 
+            width: 85%; 
+            max-width: 280px; 
+            height: auto;
+            object-fit: contain; 
+            margin-bottom: 20px;
+            filter: drop-shadow(0 10px 15px rgba(255, 77, 109, 0.2));
+        }
+        .emoji-stage { font-size: 70px; margin-bottom: 10px; }
+        h1 { color: #800e13; font-size: 24px; margin-bottom: 25px; padding: 0 10px; }
+
+        .btn-group { 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            gap: 20px; 
+            width: 100%; 
+        }
+        #yesBtn { 
+            background: #28a745; color: white; padding: 18px 35px; 
+            border-radius: 50px; border: none; font-size: 20px; 
+            font-weight: bold; cursor: pointer; width: 85%; 
+            box-shadow: 0 8px 20px rgba(40, 167, 69, 0.3);
+            transition: all 0.3s ease;
+        }
+        #noBtn { 
+            background: #ff4d6d; color: white; padding: 12px 25px; 
+            border-radius: 50px; border: none; font-size: 16px; 
+            cursor: pointer; box-shadow: 0 4px 10px rgba(255, 77, 109, 0.2);
+        }
+
+        /* --- Surprise Message Section --- */
+        #surprise { 
+            display: none; 
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            overflow-y: auto; 
+            padding: 40px 20px;
+            background: linear-gradient(rgba(255, 240, 243, 0.85), rgba(255, 240, 243, 0.85)), url('love2.jpeg');
+            background-size: cover;
+            background-position: center;
+            z-index: 500;
+        }
+        
+        .letter-container {
+            background: rgba(255, 255, 255, 0.95); 
+            border-radius: 25px; 
+            padding: 30px 20px; 
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1); 
+            text-align: left; 
+            line-height: 1.8; 
+            color: #333; 
+            border-left: 8px solid var(--primary-pink);
+            margin-bottom: 30px;
+        }
+
+        .call-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: #28a745;
+            color: white;
+            text-decoration: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 18px;
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.4);
+            margin-bottom: 20px;
+            width: 80%;
+            max-width: 300px;
+            transition: transform 0.2s;
+        }
+        .call-btn:active { transform: scale(0.95); }
+
+        .heart-particle { position: fixed; color: #ff4d6d; font-size: 24px; pointer-events: none; z-index: 999; animation: floatUp 3s linear forwards; }
+        
+        @keyframes floatUp { 0% { transform: translateY(0) rotate(0); opacity: 1; } 100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; } }
+        .shake { animation: shake 0.5s; }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-10px); } 75% { transform: translateX(10px); } }
+
+        /* Mobile specific font adjustments */
+        @media (max-width: 380px) {
+            h1 { font-size: 20px; }
+            .num-btn { width: 60px; height: 60px; }
+            .emoji-stage { font-size: 55px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- 🔐 Passcode Screen -->
+<div id="pass-screen">
+    <div class="animate__animated animate__fadeInDown" style="text-align:center;">
+        <h2 style="color: #ff4d6d; margin-bottom: 5px;">Our Special Date? ❤️</h2>
+        <p style="color: #999; font-size: 14px; margin-top:0;">ගෙස් කරලා ගහන්න බලන්න මෝඩි</p>
+    </div>
+    
+    <div class="pass-dots" id="dotsContainer">
+        <div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+    </div>
+    
+    <div class="num-pad animate__animated animate__fadeInUp">
+        <button class="num-btn" onclick="press(1)">1</button>
+        <button class="num-btn" onclick="press(2)">2</button>
+        <button class="num-btn" onclick="press(3)">3</button>
+        <button class="num-btn" onclick="press(4)">4</button>
+        <button class="num-btn" onclick="press(5)">5</button>
+        <button class="num-btn" onclick="press(6)">6</button>
+        <button class="num-btn" onclick="press(7)">7</button>
+        <button class="num-btn" onclick="press(8)">8</button>
+        <button class="num-btn" onclick="press(9)">9</button>
+        <button class="num-btn" style="background:none" disabled></button>
+        <button class="num-btn" onclick="press(0)">0</button>
+        <button class="num-btn" onclick="resetPass()" style="font-size: 16px; background:#ffd1d1;">CLR</button>
+    </div>
+</div>
+
+<!-- 💖 Main Surprise Section -->
+<div id="main-content" class="animate__animated animate__fadeIn">
+    <div class="emoji-stage" id="emojiContainer">😊</div>
+    <img src="love.png" alt="Us" class="main-img">
+    <h1 id="questionText">Will you be my Valentine forever? ❤️</h1>
+    
+    <div class="btn-group">
+        <button id="yesBtn" onclick="finish()">Yes, I Will! 🥰</button>
+        <button id="noBtn" onclick="handleNo()">No</button>
+    </div>
+</div>
+
+<!-- 🎁 Final Animation & Letter -->
+<div id="surprise" class="animate__animated animate__zoomIn">
+    <center>
+        <div style="font-size: 80px; margin-bottom: 10px;">💍</div>
+        <h1 style="color: #ff4d6d; font-size: 32px; margin-bottom: 25px; text-shadow: 0 2px 4px rgba(0,0,0,0.1);">I Love You Too! ❤️</h1>
+    </center>
+    
+    <div class="letter-container animate__animated animate__fadeInUp">
+        <p style="font-size: 22px; font-weight: bold; color: #ff4d6d; margin-top: 0;">මගේ හිතුවක්කාර යක්ශණියට, ❤️😗</p>
+        
+        <p>අද වැලන්ටයින් දවස වුණාට, ඇත්තටම අපේ මේ අවුරුදු පහක ගමන දිහා බැලුවම හැමදාම අපිට ආදරවන්තයන්ගේ දවසක් තමයි. හැබැයි ඉතින් වැඩ වැඩිකමයි, ටාගට් පස්සේ දුවන එකයි හින්දා හුඟක් වෙලාවට අපිට ඒක අමතක වෙනවා.</p>
+        
+        <p>පහුගිය කාලේ මගේ අතින් වැරදීම් ගොඩක් වුණා, මම ඒ ගැන ඇත්තටම දුක් වෙනවා. ඒ හැමදේම ඉවසගෙන මගේ ළඟින්ම හිටියට මගේ කෙල්ලට ගොඩක් පින්. ඉස්සර වුණ වැරදි ආයෙ වෙන්නෙ නැ. අපි දෙන්නා මැරෙනකල්ම එකට ඉමු කියලා පොරොන්දු වුණානේ, ඉතින් ඒ පොරොන්දුව එහෙම්මමයි.</p>
+        
+        <p>අපි දෙන්නටම දිනන්න ලොකු හීන තියෙනවා. ඒ හීන පස්සේ දුවද්දී පොඩි පොඩි යුද්ධ ප්‍රකාශ කරගත්තට කමක් නැහැ, හැබැයි කිසිම වෙලාවක මාව දාලා යන්න නම් ඔට්ටු නැහැ ඔන්න. මේ අවුරුද්දේ කොහොම හරි අපේ ටාගට් වලට යමු.</p>
+        
+        <p>වැඩ අස්සේ හදිස්සියෙන් වචන ගැලපුවට, මේ හැම අකුරක් අස්සේම තියෙන්නේ ඔයාට තියෙන අවංකම ආදරේ.</p>
+        
+        <p style="font-weight: bold; color: #d63384; font-size: 18px; border-top: 1px dashed #ffc1cc; padding-top: 15px;">හැපි වැලන්ටයින් ඩේ සුදු නෝනා! හැමදාමත් මගේම වෙලා ඉන්න. 😗✌️❤️</p>
+        
+        <p style="text-align: right; font-weight: bold; font-style: italic; color: #ff4d6d; margin-bottom: 0; font-size: 20px;">ආදරෙයි මගේ Rosee 🌹🤍</p>
+    </div>
+    
+    <center>
+        <!-- 📞 Call Me Button -->
+        <a href="tel:+94767895962" class="call-btn animate__animated animate__pulse animate__infinite">
+            <span>📞 Call Me Now</span>
+        </a>
+        <br>
+        <button onclick="location.reload()" style="background: none; border: 1px solid var(--primary-pink); color: var(--primary-pink); padding: 10px 20px; border-radius: 50px; font-weight: bold; margin-bottom: 40px; cursor: pointer;">Back to Start</button>
+    </center>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+<script>
+    // --- Configuration ---
+    const CORRECT_PASS = "0222"; 
+    let currentInput = "";
+    let noCount = 0;
+
+    const noMessages = [
+        "No", 
+        "Are you sure? 🥺", 
+        "මාව එපාද? 💔", 
+        "Really? Think again! 😢", 
+        "ඔයා මට මෙහෙම කරනවද? 😭", 
+        "I'm gonna cry... 😿", 
+        "Please say Yes... ❤️",
+        "Don't do this to me! 💔",
+        "You're breaking my heart 😭",
+        "Last chance! 😟"
+    ];
+    const emojis = ["😊", "😟", "🥺", "😢", "😭", "😿", "☹️", "😣", "😭", "💔"];
+
+    // --- Passcode Logic ---
+    function press(num) {
+        if(currentInput.length < 4) {
+            currentInput += num;
+            updateDots();
+            if(currentInput.length === 4) {
+                setTimeout(checkPass, 400);
+            }
+        }
+    }
+
+    function updateDots() {
+        const dots = document.querySelectorAll('.dot');
+        dots.forEach((dot, i) => {
+            dot.classList.toggle('active', i < currentInput.length);
+        });
+    }
+
+    function checkPass() {
+        if(currentInput === CORRECT_PASS) {
+            document.getElementById('pass-screen').style.transform = "translateY(-100%)";
+            setTimeout(() => {
+                document.getElementById('pass-screen').style.display = 'none';
+                document.getElementById('main-content').style.display = 'block';
+            }, 800);
+        } else {
+            document.getElementById('dotsContainer').classList.add('shake');
+            if (window.navigator.vibrate) window.navigator.vibrate(200);
+            
+            setTimeout(() => {
+                document.getElementById('dotsContainer').classList.remove('shake');
+                resetPass();
+            }, 500);
+        }
+    }
+
+    function resetPass() {
+        currentInput = "";
+        updateDots();
+    }
+
+    // --- Interaction Logic ---
+    function handleNo() {
+        noCount++;
+        const yesBtn = document.getElementById('yesBtn');
+        const noBtn = document.getElementById('noBtn');
+        
+        const currentSize = parseFloat(window.getComputedStyle(yesBtn).fontSize);
+        const newSize = currentSize + 15;
+        yesBtn.style.fontSize = newSize + "px";
+        yesBtn.style.padding = (newSize * 0.8) + "px";
+
+        if(noCount < noMessages.length) {
+            noBtn.innerText = noMessages[noCount];
+            document.getElementById('emojiContainer').innerText = emojis[noCount];
+        } else {
+            const lastMsg = noMessages[noMessages.length - 1];
+            noBtn.innerText = lastMsg;
+            document.getElementById('emojiContainer').innerText = "😭💔";
+        }
+        
+        document.body.classList.add('shake');
+        setTimeout(() => document.body.classList.remove('shake'), 200);
+    }
+
+    function finish() {
+        document.getElementById('main-content').style.display = 'none';
+        document.getElementById('surprise').style.display = 'block';
+        
+        const end = Date.now() + (2 * 1000);
+        const colors = ['#ff4d6d', '#ffb3c1', '#ffffff'];
+
+        (function frame() {
+            confetti({
+                particleCount: 3,
+                angle: 60,
+                spread: 55,
+                origin: { x: 0 },
+                colors: colors
+            });
+            confetti({
+                particleCount: 3,
+                angle: 120,
+                spread: 55,
+                origin: { x: 1 },
+                colors: colors
+            });
+
+            if (Date.now() < end) {
+                requestAnimationFrame(frame);
+            }
+        }());
+        
+        setInterval(createHeart, 400);
+    }
+
+    function createHeart() {
+        const heart = document.createElement('div');
+        heart.innerHTML = "❤️";
+        heart.classList.add('heart-particle');
+        heart.style.left = Math.random() * 95 + "vw";
+        heart.style.fontSize = (Math.random() * 20 + 15) + "px";
+        heart.style.animationDuration = (Math.random() * 2 + 2) + "s";
+        document.body.appendChild(heart);
+        setTimeout(() => heart.remove(), 3000);
+    }
+</script>
+</body>
+</html>
